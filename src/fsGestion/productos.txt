@@ -1,8 +1,0 @@
-[
-  {
-    "title": "zapatilla de emos",
-    "price": "123.45",
-    "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/096/971/products/_lr043031-33e3f821eb259c3af416275596440947-640-0.webp",
-    "id": 1
-  }
-]

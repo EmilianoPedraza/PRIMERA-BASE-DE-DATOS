@@ -1,8 +1,0 @@
-[
-  {
-    "email": "1@gmail.com",
-    "mensaje": "hola",
-    "time": "12/12/2022 03:45:17",
-    "id": 1
-  }
-]

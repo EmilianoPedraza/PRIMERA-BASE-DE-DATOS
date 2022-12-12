@@ -3,7 +3,6 @@ const express = require("express");
 const moment = require("moment");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-const fsGestion = require("./fsGestion/fsGestion");
 
 // para gestion mySQL y sqlite3
 const gestionSql = require("./scriptsSql/gestionSql.js");
@@ -11,10 +10,6 @@ const { mysql, sqlite3 } = require("./conection/options.js");
 //construccion mySQL y sqlite3==============================
 const productosSql = new gestionSql(mysql, "productos");
 const mensajesSql = new gestionSql(sqlite3, "mensajes");
-
-//almacenamiento=============================================
-const mensajes = new fsGestion("./src/fsGestion/mensajes.txt");
-const productos = new fsGestion("./src/fsGestion/productos.txt");
 
 //necesarios para el servidor=========================================
 const app = express();
@@ -35,24 +30,22 @@ const server = htmlserver.listen(puerto, () => {
 //==============================================================================================
 //conección de sockets
 io.on("connection", async (socket) => {
+  // await productosSql.deleteAll()
+  // await mensajesSql.deleteAll()
   console.log("\nCliente conectado");
-  //const listProd = await productos.getAll()
   const listProd = await productosSql.getAll();
   socket.emit("canalProductos", listProd);
 
   socket.on("nuevoProducto", async (prod) => {
     await productosSql.save(prod);
-    console.log(prod)
     io.sockets.emit("actualizacionPrd", prod);
   });
-  //apartado de mensajes
   const listMessage = await mensajesSql.getAll();
   socket.emit("mensajes", listMessage);
 
   socket.on("nuevoMensaje", async (msjRecib) => {
     const fyh = moment(new Date()).format("DD/MM/YYYY hh:mm:ss");
     const message = { ...msjRecib, time: fyh };
-    console.log(message)
     await mensajesSql.save(message);
     io.sockets.emit("nuevoMensajeAtodos", message);
   });
