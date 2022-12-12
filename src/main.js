@@ -41,8 +41,8 @@ io.on("connection", async (socket) => {
   socket.emit("canalProductos", listProd);
 
   socket.on("nuevoProducto", async (prod) => {
-    //productos.save(prod)
     await productosSql.save(prod);
+    console.log(prod)
     io.sockets.emit("actualizacionPrd", prod);
   });
   //apartado de mensajes
@@ -52,8 +52,8 @@ io.on("connection", async (socket) => {
   socket.on("nuevoMensaje", async (msjRecib) => {
     const fyh = moment(new Date()).format("DD/MM/YYYY hh:mm:ss");
     const message = { ...msjRecib, time: fyh };
+    console.log(message)
     await mensajesSql.save(message);
-    //mensajes.save(message)
     io.sockets.emit("nuevoMensajeAtodos", message);
   });
 });

@@ -1,3 +1,4 @@
+const { on } = require("events");
 const knex = require("knex")
 
 class gestionSql {
@@ -12,8 +13,8 @@ class gestionSql {
       if(obj !== undefined){
         if(!existe){
           await this.conecction.schema.createTable(this.table, (art)=>{
+            art.increments("id").primary();
             for(const prop in obj){
-                art.increments("id").primary();
                 if (typeof obj[prop] === "string"){art.string(prop).notNullable();}
                 if(typeof obj[prop] === "number"){
                   obj[prop] % 1 == 0 ? art.integer(prop).notNullable() : art.float(prop).notNullable()
@@ -24,8 +25,6 @@ class gestionSql {
       }else{return existe}
     } catch (error) {
         console.log("[Error en validateTable]: \n", error)
-    }finally{
-      this.conecction.destroy()
     }
   }
   save = async (obj)=>{
@@ -34,7 +33,7 @@ class gestionSql {
       await this.conecction(this.table).insert(obj)
     }
     catch (error){console.log("[Error en save]: \n", error)
-    }finally{this.conecction.destroy()}
+    }
   };
 
   getById = async (id)=>{
@@ -48,8 +47,6 @@ class gestionSql {
       }
     } catch (error) {
          console.log("[Error en save]: \n", error)
-    }finally{
-      this.conecction.destroy()
     }
   }
 
@@ -63,8 +60,6 @@ class gestionSql {
       }
     } catch (error) {
       console.log("[Error en getAll]: \n", error)
-    }finally{
-      this.conecction.destroy()
     }
   };
 
@@ -81,8 +76,6 @@ class gestionSql {
       }
     } catch (error) {
       console.log("[Error en deleteById]: \n", error)
-    }finally{
-      this.conecction.destroy()
     }
   }
 
@@ -92,8 +85,6 @@ class gestionSql {
       await this.conecction(this.table).del()
     } catch (error) {
       console.log(`[En deleteAll]:Eliminación irrealizable, la tabla "${this.table}" no existe.`)
-    }finally{
-      this.conecction.destroy()
     }
   }
 
